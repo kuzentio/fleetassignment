@@ -11,5 +11,3 @@ class VehiclePosition(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     lon = models.FloatField()
     lat = models.FloatField()
-
-    mpoly = models.MultiPolygonField()

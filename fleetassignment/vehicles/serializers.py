@@ -8,6 +8,3 @@ class VehicleSerializer(serializers.ModelSerializer):
         model = Vehicle
         fields = ('model', 'full_name', 'plate_number')
 
-class VehiclePositionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model =
