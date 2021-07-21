@@ -1,9 +1,8 @@
-from django import http
 from django.test import TestCase
 from django.core.cache import cache
 from django_dynamic_fixture import G
 from rest_framework.reverse import reverse
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
+from rest_framework.status import HTTP_201_CREATED
 
 from fleetassignment.vehicles.models import Vehicle, VehiclePosition
 

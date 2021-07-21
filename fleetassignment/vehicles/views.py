@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import viewsets
 
 from fleetassignment.vehicles.models import Vehicle, VehiclePosition
@@ -11,6 +12,9 @@ class VehicleListViewSet(viewsets.ModelViewSet):
     def process_search_location(self, queryset):
         start_lat = self.request.query_params.get('lat')
         start_lon = self.request.query_params.get('lon')
+        pnt = GEOSGeometry(f'POINT({start_lat} {start_lon})', srid=4326)
+        queryset = queryset.filter()
+
         # TODO: not implemented ^^
 
     def get_queryset(self):

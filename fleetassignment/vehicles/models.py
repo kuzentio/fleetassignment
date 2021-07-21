@@ -1,5 +1,7 @@
 from django.core.cache import cache
 from django.db import models
+from django.contrib.gis.db.models import PointField
+from django.contrib.gis.geos import GEOSGeometry
 
 
 class Vehicle(models.Model):
@@ -12,9 +14,11 @@ class VehiclePosition(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     lon = models.FloatField()
     lat = models.FloatField()
+    point = PointField(srid=32140)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None) -> None:
+        self.point = GEOSGeometry(f'POINT({self.lat} {self.lon})')
         super().save()
         if self.pk:
             cache.set(

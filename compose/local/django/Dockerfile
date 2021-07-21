@@ -1,19 +1,12 @@
-ARG PYTHON_VERSION=3.9-slim-buster
-
+#ARG PYTHON_VERSION=3.9-slim-buster
+ARG PYTHON_VERSION=3.7-shippable
 # define an alias for the specfic python version used in this file.
-FROM python:${PYTHON_VERSION} as python
+FROM thinkwhere/gdal-python:${PYTHON_VERSION} as python
 
 # Python build stage
 FROM python as python-build-stage
 
 ARG BUILD_ENVIRONMENT=local
-
-# Install apt packages
-RUN apt-get update && apt-get install --no-install-recommends -y \
-  # dependencies for building Python packages
-  build-essential \
-  # psycopg2 dependencies
-  libpq-dev
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .
@@ -60,8 +53,6 @@ RUN chmod +x /entrypoint
 COPY ./compose/local/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
-
-
 
 # copy application code to WORKDIR
 COPY . ${APP_HOME}
