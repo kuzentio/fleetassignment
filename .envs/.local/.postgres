@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=fleetassignment
+POSTGRES_USER=doKJVrHukYjBxasxLTJqDBFiZyYYeHFR
+POSTGRES_PASSWORD=bcs2GnyozvUgSYoPMtDp8QyndVJgnXgmjzWFYo9XCxWmPo1gOxleREI0CvRVlmES
