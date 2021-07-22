@@ -1,4 +1,5 @@
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
 from rest_framework import viewsets
 
 from fleetassignment.vehicles.models import Vehicle, VehiclePosition
@@ -12,10 +13,11 @@ class VehicleListViewSet(viewsets.ModelViewSet):
     def process_search_location(self, queryset):
         start_lat = self.request.query_params.get('lat')
         start_lon = self.request.query_params.get('lon')
-        pnt = GEOSGeometry(f'POINT({start_lat} {start_lon})', srid=4326)
-        queryset = queryset.filter()
-
-        # TODO: not implemented ^^
+        pnt = GEOSGeometry(f'POINT({start_lon} {start_lat})', srid=4326)
+        queryset = queryset.filter(
+            vehicleposition__point__distance_lte=(pnt, D(m=self.request.query_params.get('nearby_radius')))
+        )
+        return queryset
 
     def get_queryset(self):
         qs = super(VehicleListViewSet, self).get_queryset()
@@ -25,7 +27,7 @@ class VehicleListViewSet(viewsets.ModelViewSet):
 
         nearby_radius = self.request.query_params.get('nearby_radius')
         if nearby_radius is not None:
-            self.process_search_location(qs)
+            qs = self.process_search_location(qs)
 
         return qs
 

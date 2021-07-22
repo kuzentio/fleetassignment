@@ -31,7 +31,7 @@ class VehicleTestCase(TestCase):
 
     def test_only_latest_vehicle_position_goes_to_cache(self):
         vehicle = G(Vehicle, plate_number=1)
-        vehicle_position = G(VehiclePosition, vehicle=vehicle, lat=30.00, lon=15.00)
+        G(VehiclePosition, vehicle=vehicle, lat=30.00, lon=15.00)
         cached_value = cache.get(f"{vehicle.id}::latest")
         self.assertIsNotNone(cached_value)
         self.assertEqual(cached_value['lat'], 30.00)
@@ -43,5 +43,11 @@ class VehicleTestCase(TestCase):
         self.assertEqual(cached_value['lat'], 10.00)
 
     def test_searching_vehicles_from_redis(self):
-        pass
-
+        vehicle1 = G(Vehicle, plate_number=1)
+        vehicle2 = G(Vehicle, plate_number=2)
+        test_pos = G(VehiclePosition, vehicle=vehicle1, lat=30.088, lon=15.088)
+        G(VehiclePosition, vehicle=vehicle2, lat=3000.00, lon=1500.00)
+        url = reverse('api:vehicle-list') + '?nearby_radius=90000&lon=15.088&lat=30.088'
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['id'], test_pos.vehicle.id)

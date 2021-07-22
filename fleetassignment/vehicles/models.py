@@ -14,14 +14,13 @@ class VehiclePosition(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     lon = models.FloatField()
     lat = models.FloatField()
-    point = PointField(srid=32140)
+    point = PointField(srid=32140, blank=True, null=True)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None) -> None:
+    def save(self, *args, **kwargs) -> None:
         self.point = GEOSGeometry(f'POINT({self.lat} {self.lon})')
         super().save()
         if self.pk:
             cache.set(
                 f'{self.vehicle.id}::latest',
-                {'lon': self.lon, 'lat': self.lat, 'id': self.id},
+                {'lon': self.lon, 'lat': self.lat, 'id': self.vehicle.id},
             )
