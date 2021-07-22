@@ -13,10 +13,14 @@ class VehicleListViewSet(viewsets.ModelViewSet):
     def process_search_location(self, queryset):
         start_lat = self.request.query_params.get('lat')
         start_lon = self.request.query_params.get('lon')
-        pnt = GEOSGeometry(f'POINT({start_lon} {start_lat})', srid=4326)
-        queryset = queryset.filter(
-            vehicleposition__point__distance_lte=(pnt, D(m=self.request.query_params.get('nearby_radius')))
-        )
+        pnt = GEOSGeometry(f'POINT({start_lon} {start_lat})', srid=32140)
+        try:
+            radius = int(self.request.query_params.get('nearby_radius'))
+            queryset = queryset.filter(
+                vehicleposition__point__distance_lte=(pnt, D(m=radius))
+            )
+        except ValueError:
+            pass
         return queryset
 
     def get_queryset(self):

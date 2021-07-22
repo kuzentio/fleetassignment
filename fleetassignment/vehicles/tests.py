@@ -45,9 +45,9 @@ class VehicleTestCase(TestCase):
     def test_searching_vehicles_from_redis(self):
         vehicle1 = G(Vehicle, plate_number=1)
         vehicle2 = G(Vehicle, plate_number=2)
-        test_pos = G(VehiclePosition, vehicle=vehicle1, lat=30.088, lon=15.088)
+        test_pos = G(VehiclePosition, vehicle=vehicle1, lat=60.4074, lon=23.7104)
         G(VehiclePosition, vehicle=vehicle2, lat=3000.00, lon=1500.00)
-        url = reverse('api:vehicle-list') + '?nearby_radius=90000&lon=15.088&lat=30.088'
+        url = reverse('api:vehicle-list') + '?nearby_radius=900&lon=23.7104&lat=60.4074'
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]['id'], test_pos.vehicle.id)

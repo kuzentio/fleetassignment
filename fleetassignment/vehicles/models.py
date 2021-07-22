@@ -17,10 +17,10 @@ class VehiclePosition(models.Model):
     point = PointField(srid=32140, blank=True, null=True)
 
     def save(self, *args, **kwargs) -> None:
-        self.point = GEOSGeometry(f'POINT({self.lat} {self.lon})')
+        self.point = GEOSGeometry(f'POINT({self.lon} {self.lat})')
         super().save()
         if self.pk:
             cache.set(
                 f'{self.vehicle.id}::latest',
-                {'lon': self.lon, 'lat': self.lat, 'id': self.vehicle.id},
+                {'lon': self.lon, 'lat': self.lat, 'id': self.id},
             )
